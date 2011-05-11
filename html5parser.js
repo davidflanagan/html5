@@ -1,3 +1,40 @@
+/*
+ * Copyright (c) 2010 Aria Stewart <aredridel@nbtsc.org>
+ * Copyright (c) 2011 David Flanagan <david@davidflanagan.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+// This is a fork of Aria Stewart's HTML5 parser:
+//    https://github.com/aredridel/html5
+// The parent project is an implementation of the parsing algorithm from the
+// HTML5 spec.  I'm not sure how compliant it is.
+// 
+// I have modified it to run in the browser instead of Node and to
+// live in a single file. I've also decoupled it from jsdom so that it
+// returns a simpler parse tree. I may have broken some of the
+// parsing functionality, but this new version seems to work well in
+// casual testing.
+// 
+// Loading this script defines HTML5.parseDocument() and
+// HTML5.parseFragment().
+//
 var HTML5 = (function() {
 
     if (!Array.prototype.last) {
@@ -2156,7 +2193,7 @@ var HTML5 = (function() {
     TreeBuilder.prototype.insert_text = function(data, parent) {
         if(!parent) parent = this.open_elements.last();
         if(!this.insert_from_table ||
-           TABLE_INSERT_MODE_ELEMENTS.indexOf(this.open_elements.last().tagName.toLowerCase()) == -1) {
+           TABLE_INSERT_MODE_ELEMENTS.indexOf(this.open_elements.last().tagname.toLowerCase()) == -1) {
 
             var lastkid = parent.children.last();
             if (lastkid && lastkid.type == TEXT) {
@@ -2561,7 +2598,7 @@ var HTML5 = (function() {
     */
 
 
-    Phase = function Phase(parser, tree) {
+    var Phase = function Phase(parser, tree) {
         this.tree = tree;
         this.parser = parser;
     }

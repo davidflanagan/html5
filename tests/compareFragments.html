@@ -1,0 +1,78 @@
+<script src="../html5parser.js"></script>
+<script>
+// Chrome requires --allow-file-access-from-files to make this work
+function compare(file) {
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function() {
+        var text = reader.result.trim();
+        var tree = HTML5.parseFragment(text);
+        
+        var div = document.createElement("div");
+        div.innerHTML = text;
+        var fragment = document.createDocumentFragment();
+        while(div.firstChild) fragment.appendChild(div.firstChild);
+
+        compareTrees(fragment, tree);
+    }
+};
+
+// Compare the DOM node doc with the simple tree node tree
+function compareTrees(doc, tree) {
+    function fail(msg, doc, tree) {
+        console.log(msg, doc, tree);
+        throw new Error(msg);
+    }
+
+    if (doc.nodeType != tree.type) 
+        fail("nodes differ", doc, tree);
+
+    switch(tree.type) {
+    case 1: // Element
+        // XXX: note case issue here
+        if (doc.tagName.toLowerCase() !== tree.tagname.toLowerCase())
+            fail("tagnames don't match", doc, tree);
+        
+        if (doc.attributes.length != tree.attributes.length)
+            fail("attribute count mismatch", doc, tree);
+        
+        for(var i = 0; i < doc.attributes.length; i++) {
+            var n = doc.attributes[i].name;
+            var v = doc.attributes[i].value;
+            
+            if (!tree.attributes.some(function(a) {
+                return a.nodeName == n && a.nodeValue == v;
+            })) 
+                fail("tree does not have matching attribute " + n, doc, tree);
+        }
+        /* fallthrough */
+    case 11: // DocumentFragment
+    case 9:  // Document
+        if (doc.childNodes.length != tree.children.length) 
+            fail("child count mismatch", doc, tree);
+        
+        for(var i = 0; i < doc.childNodes.length; i++) {
+            var d = doc.childNodes[i];
+            var t = tree.children[i];
+            compareTrees(d, t);
+        }
+
+        break;
+    case 3: // TEXT
+        if (doc.data != tree.data) 
+            fail("text nodes don't match", doc, tree);
+        break;
+    case 8: // COMMENT
+        if (doc.data != tree.data) 
+            fail("comments don't match", doc, tree);
+        break;
+    case 10: // DOCTYPE
+        break;
+    }
+
+//    console.log(tree.type, tree.tagname, "equal");
+    return true;
+}
+
+</script>
+<input type="file" onchange="compare(this.files[0])"/>
