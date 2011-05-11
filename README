@@ -1,4 +1,16 @@
-This is a fork of https://github.com/aredridel/html5
+This is a fork of Aria Stewart's HTML5 parser:
 
-My goal is to modify it to work in browsers (rather than node) and
-to de-couple it from jsdom, so that it just emits a simple non-DOM tree.
+   https://github.com/aredridel/html5
+
+I have modified it to run in the browser instead of Node and to
+live in a single file. I've also decoupled it from jsdom so that it
+returns a simpler parse tree.
+
+Loading html5parser.js defines HTML5.parseDocument() and HTML5.parseFragment().
+
+The parent project from which this one is forked has a lot of tests, and
+is presumably a pretty compliant parser, through I have not run those
+tests myself.  
+
+I may have broken the parsing functionality while making my
+modifications, but it seems to work okay for me in casual testing.
